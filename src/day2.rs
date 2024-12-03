@@ -7,41 +7,37 @@ pub fn day2_part2() {
 }
 
 pub fn day2_calculation(input: &mut Vec<Vec<i32>>) -> i32 {
-    let mut total = 0;
-    for v in input.iter() {
+    input.iter().map(|v| {
         let mut unsafe_levels: Vec<_> = unsafe_detector(&v).map(|(i, invalid)| {
             return (i, invalid);
         }).collect(); // (index, [first, second])
-        if unsafe_levels.len() > 0 {
+        return if unsafe_levels.len() > 0 {
             for (i, _) in unsafe_levels {
                 if i > 0 {
                     let mut vec0 = v.clone();
                     vec0.remove(i - 1);
                     if unsafe_detector(&vec0).count() == 0 {
-                        total += 1;
-                        break;
+                        return 1;
                     }
                 }
 
                 let mut vec1 = v.clone();
                 vec1.remove(i);
                 if unsafe_detector(&vec1).count() == 0 {
-                    total += 1;
-                    break;
+                    return 1;
                 }
 
                 let mut vec2 = v.clone();
                 vec2.remove(i + 1);
                 if unsafe_detector(&vec2).count() == 0 {
-                    total += 1;
-                    break;
+                    return 1;
                 }
             }
+            0
         } else {
-            total += 1;
-        }
-    }
-    total
+            1
+        };
+    }).sum()
 }
 
 fn unsafe_detector(v: &Vec<i32>) -> impl Iterator<Item=(usize, &[i32])> {
@@ -53,19 +49,17 @@ fn unsafe_detector(v: &Vec<i32>) -> impl Iterator<Item=(usize, &[i32])> {
         let second = pair[1];
         let diff = (first - second).abs();
         return diff > 3 || (first >= second && ascending || first <= second && !ascending);
-        ;
     })
 }
 
 pub fn day2_part1() {
     let input = read_content();
-
-    let mut total = 0;
-    for v in input.iter() {
+    let total: i32 = input.iter().map(|v| {
         let detected_unsafe: Vec<_> = unsafe_detector(v).collect();
         let mut unsafe_levels_count: usize = detected_unsafe.len();
-        if unsafe_levels_count == 0 { total += 1 }
-    }
+        if unsafe_levels_count == 0 { 1; }
+        0
+    }).sum();
     println!("{}", total);
 }
 
