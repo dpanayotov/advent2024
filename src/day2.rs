@@ -2,15 +2,11 @@ use std::fs;
 
 pub fn day2_part2() {
     let mut input = read_content();
-    let total = day2_calculation(&mut input);
-    println!("total: {}", total);
-}
-
-pub fn day2_calculation(input: &mut Vec<Vec<i32>>) -> i32 {
-    input.iter().map(|v| {
+    let total :i64 = input.iter().map(|v| {
         let mut unsafe_levels: Vec<_> = unsafe_detector(&v).map(|(i, invalid)| {
             return (i, invalid);
         }).collect(); // (index, [first, second])
+
         return if unsafe_levels.len() > 0 {
             for (i, _) in unsafe_levels {
                 if i > 0 {
@@ -37,7 +33,9 @@ pub fn day2_calculation(input: &mut Vec<Vec<i32>>) -> i32 {
         } else {
             1
         };
-    }).sum()
+    }).sum();
+
+    println!("total: {}", total);
 }
 
 fn unsafe_detector(v: &Vec<i32>) -> impl Iterator<Item=(usize, &[i32])> {
@@ -55,10 +53,8 @@ fn unsafe_detector(v: &Vec<i32>) -> impl Iterator<Item=(usize, &[i32])> {
 pub fn day2_part1() {
     let input = read_content();
     let total: i32 = input.iter().map(|v| {
-        let detected_unsafe: Vec<_> = unsafe_detector(v).collect();
-        let mut unsafe_levels_count: usize = detected_unsafe.len();
-        if unsafe_levels_count == 0 { 1; }
-        0
+        let x :Vec<_> = unsafe_detector(v).collect();
+        return if x.len() == 0 { 1 } else { 0 };
     }).sum();
     println!("{}", total);
 }
